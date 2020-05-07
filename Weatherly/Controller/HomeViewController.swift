@@ -8,38 +8,54 @@
 
 import UIKit
 import CoreLocation
+import MapKit
 
-class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetcherDelegate
+public struct weatherToShow
 {
-    var locationManager: CLLocationManager!
-    var jsonFetcher:JSONFetcher?
-    var weather:currentWeatherModel?
     
-    func didFinishFetching(_ sender: JSONFetcher) {
+}
+
+class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetcherDelegate, MKMapViewDelegate
+{
+    var locManager = CLLocationManager()
+    var currentLocation: CLLocation!
+    var jsonFetcher: JSONFetcher?
+    var weather: currentWeatherModel?
+    let apikey = "44b7ba412800701a672fda14ae3f816c"
+    var lon = 0.0
+    var lat = 0.0
+    
+    func didFinishFetching(_ sender: JSONFetcher)
+    {
         weather = jsonFetcher!.weather
         print(weather!.name)
     }
+    
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        if (CLLocationManager.locationServicesEnabled())
-        {
-            locationManager = CLLocationManager()
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.requestAlwaysAuthorization()
-            locationManager.startUpdatingLocation()
-        }
+        locManager.requestWhenInUseAuthorization()
         
-        func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
+            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways)
         {
-            let location = locations.last! as CLLocation
+            guard let currentLocation = locManager.location else
+            {
+                return
+            }
+            print(currentLocation.coordinate.latitude)
+            print(currentLocation.coordinate.longitude)
+            
+            self.lon = currentLocation.coordinate.longitude
+            self.lat = currentLocation.coordinate.latitude
         }
-        
+            
         jsonFetcher = JSONFetcher()
         jsonFetcher?.delegate = self
-        jsonFetcher?.fetchWeather(longitute: 139, latitude: 35, apikey: "439d4b804bc8187953eb36d2a8c26a02")
+        jsonFetcher?.fetchWeather(longitute: lon, latitude: lat, apikey: apikey)
+        
+        print(lon, lat)
     }
 }

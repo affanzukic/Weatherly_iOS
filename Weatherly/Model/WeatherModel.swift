@@ -8,15 +8,16 @@
 
 import Foundation
 
-
 public class currentWeatherModel: Decodable
 {
+    let coord: coord
     let weather: [weather]
     let base: String
     let main: main
+    let visibility: Int = 0
     let wind: wind
     let clouds: clouds
-    let dt: String
+    let dt: Int
     let sys: sys
     let timezone: Int
     let id: Int
@@ -26,8 +27,8 @@ public class currentWeatherModel: Decodable
 
 public class coord: Decodable
 {
-    let lon: Int
-    let lat: Int
+    let lon: Double
+    let lat: Double
 }
 
 public class weather: Decodable
@@ -51,7 +52,7 @@ public class main: Decodable
 public class wind: Decodable
 {
     let speed: Double
-    let deg: Double
+    let deg: Int
 }
 
 public class clouds: Decodable
@@ -61,10 +62,9 @@ public class clouds: Decodable
 
 public class sys: Decodable
 {
-    let type: Int
-    let id: Int
-    let message: Double
-    let country: String
+    let type: Int = 0
+    let id: Int = 0
+    let country: String? = nil ?? ""
     let sunrise: Int
     let sunset: Int
 }

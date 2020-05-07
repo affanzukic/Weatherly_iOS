@@ -10,17 +10,17 @@ import Foundation
 
 class JSONFetcher
 {
-    var weather:currentWeatherModel?
-    var delegate:JSONFetcherDelegate?
+    var weather: currentWeatherModel?
+    var delegate: JSONFetcherDelegate?
     
     init()
     {
         self.weather = nil
     }
     
-    func fetchWeather(longitute: Int, latitude : Int, apikey: String)
+    func fetchWeather(longitute: Double, latitude: Double, apikey: String)
     {
-        let urlString = "https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02"
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitute)&appid=\(apikey)"
         
         if let url = URL(string: urlString)
         {
