@@ -76,7 +76,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     var countryCode = ""
     var celsiusOrFahrenheit = -273.15
     var celsiusOrFahrenheitLetter = "C"
-    // var resultSearchController:UISearchController? = nil
+    var resultSearchController: UISearchController? = nil
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    var name: String? = nil
     
     @IBOutlet weak var countryFlag: UIImageView!
     @IBOutlet weak var cityName: UILabel!
@@ -92,26 +95,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     @IBOutlet weak var iconView: UIImageView!
     @IBOutlet weak var searchBar: UISearchBar!
     
+    
     @IBAction func updateWeatherButton(_ sender: Any)
     {
-        getLocation()
-    }
-    
-    func getLocation()
-    {
-        if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
-            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways)
-        {
-            guard let currentLocation = locManager.location else
-            {
-                return
-            }
-            print(currentLocation.coordinate.latitude)
-            print(currentLocation.coordinate.longitude)
-            
-            self.lon = currentLocation.coordinate.longitude
-            self.lat = currentLocation.coordinate.latitude
-        }
+        locManager.requestLocation()
         
         jsonFetcher = JSONFetcher()
         jsonFetcher?.delegate = self
@@ -125,37 +112,67 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
         
         let currentWeather = weatherToShow(name: weatherFetcher!.name, country: weatherFetcher!.sys.country ?? "", windSpeed: weatherFetcher!.wind.speed, windDeg: weatherFetcher!.wind.deg, humidity: weatherFetcher!.main.humidity, pressure: weatherFetcher!.main.pressure, temp: weatherFetcher!.main.temp, feelsLike: weatherFetcher!.main.feels_like, minTemp: weatherFetcher!.main.temp_min, maxTemp: weatherFetcher!.main.temp_max, icon: weatherFetcher!.weather[0].icon, title: weatherFetcher!.weather[0].main, description: weatherFetcher!.weather[0].description)
         
-        cityName.text = currentWeather.name
-        countryCode = currentWeather.country
-        windLabel.text = "Wind: \(currentWeather.windSpeed)  / \(currentWeather.windDeg)"
-        humidityLabel.text = "Humidity: \(currentWeather.humidity)"
-        pressureLabel.text = "Pressure: \(currentWeather.pressure)"
-        tempLabel.text = "\(currentWeather.temp + celsiusOrFahrenheit) \(celsiusOrFahrenheitLetter)"
-        feelsLike.text = "\(currentWeather.feelsLike - celsiusOrFahrenheit) \(celsiusOrFahrenheitLetter)"
-        minMaxTemp.text = "H \(currentWeather.maxTemp - celsiusOrFahrenheit) \(celsiusOrFahrenheitLetter)  /  L \(currentWeather.minTemp - celsiusOrFahrenheit) \(celsiusOrFahrenheitLetter)"
-        iconView.load(url: URL(string: "http://openweathermap.org/img/wn/\(currentWeather.icon)@2x.png")!)
-        
-        titleLabel.text = currentWeather.title
-        descriptionLabel.text = currentWeather.description
+        DispatchQueue.main.async
+            {
+                self.cityName.text = currentWeather.name
+                self.countryCode = currentWeather.country
+                self.windLabel.text = "Wind: \(currentWeather.windSpeed)  / \(currentWeather.windDeg)"
+                self.humidityLabel.text = "Humidity: \(currentWeather.humidity)"
+                self.pressureLabel.text = "Pressure: \(currentWeather.pressure)"
+                self.tempLabel.text = "\(currentWeather.temp + self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)"
+                self.feelsLike.text = "\(currentWeather.feelsLike - self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)"
+                self.minMaxTemp.text = "H \(currentWeather.maxTemp - self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)  /  L \(currentWeather.minTemp - self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)"
+                self.iconView.load(url: URL(string: "https://openweathermap.org/img/wn/\(currentWeather.icon)@2x.png")!)
+            
+                self.titleLabel.text = currentWeather.title
+                self.descriptionLabel.text = currentWeather.description
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
+    {
+        if status == .authorizedAlways
+        {
+            print("Location services enabled")
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+    {
+        self.lat = manager.location?.coordinate.latitude as! Double
+        self.lon = manager.location?.coordinate.longitude as! Double
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
+    {
+        print(error)
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        locManager.requestWhenInUseAuthorization()
+        locManager.requestAlwaysAuthorization()
+        locManager.delegate = self
+        locManager.startMonitoringSignificantLocationChanges()
+        locManager.startUpdatingLocation()
         
-        let locationSearchTable = storyboard!.instantiateViewController(withIdentifier: "LocationSearchTable") as! LocationSearchTable
-        /*resultSearchController = UISearchController(searchResultsController: locationSearchTable)
-        resultSearchController?.searchResultsUpdater = locationSearchTable as UISearchResultsUpdating
+        locManager.requestLocation()
+        
+        jsonFetcher = JSONFetcher()
+        jsonFetcher?.delegate = self
+        jsonFetcher?.fetchWeather(longitute: lon, latitude: lat, apikey: apikey)
+        
+        let locationSearchTable = storyboard!.instantiateViewController(withIdentifier: "LocationSearch")
+        resultSearchController = UISearchController(searchResultsController: locationSearchTable)
+        resultSearchController?.searchResultsUpdater = locationSearchTable as! UISearchResultsUpdating
         searchBar = resultSearchController!.searchBar
-        searchBar.placeholder = "Search for places"
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Search..."
         resultSearchController?.hidesNavigationBarDuringPresentation = false
-        resultSearchController?.dimsBackgroundDuringPresentation = true
-        definesPresentationContext = true */
-        
-        getLocation()
+        definesPresentationContext = true
         
         print(lon, lat)
     }
 }
+

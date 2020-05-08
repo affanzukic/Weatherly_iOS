@@ -1,5 +1,5 @@
 //
-//  LocationSearchTable.swift
+//  LocationSearchViewController.swift
 //  Weatherly
 //
 //  Created by Affan Zukić on 2020-05-08.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LocationSearchTable: UITableViewController {
+class LocationSearchViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,7 +89,7 @@ class LocationSearchTable: UITableViewController {
 
 }
 
-extension LocationSearchTable : UISearchResultsUpdating
+extension LocationSearchViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController)
     {
