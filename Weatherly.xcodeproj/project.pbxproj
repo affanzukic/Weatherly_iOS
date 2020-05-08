@@ -10,6 +10,7 @@
 		4B66CDBD2463646E00485437 /* JSONFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B66CDBC2463646E00485437 /* JSONFetcher.swift */; };
 		4B66CDBF246364DC00485437 /* JSONFetcherDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B66CDBE246364DC00485437 /* JSONFetcherDelegate.swift */; };
 		4B66CDC12463650A00485437 /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B66CDC02463650A00485437 /* WeatherModel.swift */; };
+		4B6CE2CA2464DE6A00DF5925 /* LocationSearchTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6CE2C92464DE6A00DF5925 /* LocationSearchTable.swift */; };
 		4BC8CE24246231CC004D27D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC8CE23246231CC004D27D9 /* AppDelegate.swift */; };
 		4BC8CE26246231CC004D27D9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC8CE25246231CC004D27D9 /* SceneDelegate.swift */; };
 		4BC8CE2D246231CC004D27D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BC8CE2B246231CC004D27D9 /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 		4B66CDBC2463646E00485437 /* JSONFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFetcher.swift; sourceTree = "<group>"; };
 		4B66CDBE246364DC00485437 /* JSONFetcherDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFetcherDelegate.swift; sourceTree = "<group>"; };
 		4B66CDC02463650A00485437 /* WeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
+		4B6CE2C92464DE6A00DF5925 /* LocationSearchTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchTable.swift; sourceTree = "<group>"; };
 		4BC8CE20246231CC004D27D9 /* Weatherly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weatherly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BC8CE23246231CC004D27D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4BC8CE25246231CC004D27D9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				4BC8CE58246234E4004D27D9 /* HomeViewController.swift */,
 				4BC8CE5A24623506004D27D9 /* DonateViewController.swift */,
 				4BC8CE5C2462351E004D27D9 /* SettingsViewController.swift */,
+				4B6CE2C92464DE6A00DF5925 /* LocationSearchTable.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -301,6 +304,7 @@
 				4BC8CE24246231CC004D27D9 /* AppDelegate.swift in Sources */,
 				4BC8CE26246231CC004D27D9 /* SceneDelegate.swift in Sources */,
 				4BC8CE59246234E4004D27D9 /* HomeViewController.swift in Sources */,
+				4B6CE2CA2464DE6A00DF5925 /* LocationSearchTable.swift in Sources */,
 				4B66CDBD2463646E00485437 /* JSONFetcher.swift in Sources */,
 				4BC8CE5D2462351E004D27D9 /* SettingsViewController.swift in Sources */,
 				4BC8CE5B24623506004D27D9 /* DonateViewController.swift in Sources */,
