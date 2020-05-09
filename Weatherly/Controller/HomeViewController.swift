@@ -30,6 +30,7 @@ extension UIImageView
     }
 }
 
+
 public struct weatherToShow
 {
     let name: String
@@ -81,7 +82,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     
     var name: String? = nil
     
-    @IBOutlet weak var countryFlag: UIImageView!
     @IBOutlet weak var cityName: UILabel!
     @IBOutlet weak var minMaxTemp: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
@@ -93,7 +93,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     @IBOutlet weak var pressureLabel: UILabel!
     @IBOutlet weak var lastUpdatedLabel: UILabel!
     @IBOutlet weak var iconView: UIImageView!
-    @IBOutlet weak var searchBar: UISearchBar!
     
     
     @IBAction func updateWeatherButton(_ sender: Any)
@@ -163,14 +162,20 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
         jsonFetcher?.delegate = self
         jsonFetcher?.fetchWeather(longitute: lon, latitude: lat, apikey: apikey)
         
-        let locationSearchTable = storyboard!.instantiateViewController(withIdentifier: "LocationSearch")
+        let locationSearchTable = storyboard!.instantiateViewController(withIdentifier: "LocationSearch") as! LocationSearchViewController
         resultSearchController = UISearchController(searchResultsController: locationSearchTable)
-        resultSearchController?.searchResultsUpdater = locationSearchTable as! UISearchResultsUpdating
-        searchBar = resultSearchController!.searchBar
+        resultSearchController?.searchResultsUpdater = locationSearchTable as UISearchResultsUpdating
+        
+        let searchBar = resultSearchController!.searchBar
         searchBar.sizeToFit()
-        searchBar.placeholder = "Search..."
+        searchBar.placeholder = "Search"
+        navigationItem.titleView = resultSearchController?.searchBar
+        
         resultSearchController?.hidesNavigationBarDuringPresentation = false
+        resultSearchController?.dimsBackgroundDuringPresentation = true
         definesPresentationContext = true
+        
+        
         
         print(lon, lat)
     }

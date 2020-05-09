@@ -7,10 +7,17 @@
 //
 
 import UIKit
+import MapKit
 
-class LocationSearchViewController: UITableViewController {
+class LocationSearchViewController: UITableViewController
+{
+    
+    var matchingItems: [MKMapItem] = []
+    var mapView: MKMapView? = nil
+    var hvc = HomeViewController()
 
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
@@ -22,25 +29,23 @@ class LocationSearchViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return matchingItems.count
     }
 
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
-        // Configure the cell...
+        let selectedItem = matchingItems[indexPath.row].placemark
+        cell.textLabel?.text = selectedItem.name
+        cell.detailTextLabel?.text = ""
 
         return cell
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.
@@ -93,6 +98,22 @@ extension LocationSearchViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController)
     {
+        guard let searchBarText = searchController.searchBar.text else { return }
+        let request = MKLocalSearch.Request()
+        let lat = hvc.lat
+        let lon = hvc.lon
+        let coord = CLLocationCoordinate2D(latitude: lat, longitude: lon)
         
+        request.naturalLanguageQuery = searchBarText
+        request.region = MKCoordinateRegion(center: coord, latitudinalMeters: 10000, longitudinalMeters: 10000)
+        
+        let search = MKLocalSearch(request: request)
+        
+        search.start{ (response, error) in
+            guard let response = response else { return }
+            
+            self.matchingItems = response.mapItems
+            self.tableView.reloadData()
+        }
     }
 }

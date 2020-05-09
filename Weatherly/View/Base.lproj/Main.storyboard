@@ -26,14 +26,6 @@
                                 <rect key="frame" x="85" y="53" width="82" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t30-5r-eVE">
-                                <rect key="frame" x="0.0" y="98" width="414" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="9pv-A4-QxB" id="5VP-jG-2P0"/>
-                                </connections>
-                            </searchBar>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fYl-dw-sjJ">
                                 <rect key="frame" x="49" y="706" width="317" height="55"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -121,7 +113,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Home" image="house.fill" catalog="system" id="acW-dT-cKf"/>
+                    <navigationItem key="navigationItem" id="T5o-aG-nTR"/>
                     <connections>
                         <outlet property="cityName" destination="C4g-b4-nyG" id="Bag-Y2-gEJ"/>
                         <outlet property="descriptionLabel" destination="D2A-G9-3qp" id="BdE-uO-xgv"/>
@@ -131,7 +123,6 @@
                         <outlet property="lastUpdatedLabel" destination="2X7-g6-IGb" id="uew-4m-4Tq"/>
                         <outlet property="minMaxTemp" destination="Ln7-zi-GfU" id="QsV-d8-NZT"/>
                         <outlet property="pressureLabel" destination="lRU-QN-JA5" id="zDh-Gy-9xS"/>
-                        <outlet property="searchBar" destination="t30-5r-eVE" id="7Jp-vF-x2P"/>
                         <outlet property="tempLabel" destination="rWT-b1-QuQ" id="Jp6-yk-v7H"/>
                         <outlet property="titleLabel" destination="gow-Mf-gsz" id="ac6-oj-uCt"/>
                         <outlet property="windLabel" destination="83Y-ut-8Gu" id="5ea-UP-0LZ"/>
@@ -139,12 +130,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749.27536231884062" y="-320.08928571428572"/>
+            <point key="canvasLocation" x="1659.4202898550725" y="-320.08928571428572"/>
         </scene>
         <!--Location Search View Controller-->
         <scene sceneID="whK-LD-LXk">
             <objects>
-                <tableViewController storyboardIdentifier="LocationSearch" id="nFI-jV-nVi" customClass="LocationSearchViewController" customModule="Weatherly" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="LocationSearch" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nFI-jV-nVi" customClass="LocationSearchViewController" customModule="Weatherly" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="50a-Vt-Roh">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -183,7 +174,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R9f-Fw-l8U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1433" y="-320"/>
+            <point key="canvasLocation" x="2342.0289855072465" y="-320.08928571428572"/>
         </scene>
         <!--Donate-->
         <scene sceneID="wg7-f3-ORb">
@@ -265,7 +256,7 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
-                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="s3J-po-y1j"/>
+                        <segue destination="QCd-OA-ZSy" kind="relationship" relationship="viewControllers" id="s3J-po-y1j"/>
                         <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="2lH-iY-fVk"/>
                         <segue destination="WCJ-RS-nmT" kind="relationship" relationship="viewControllers" id="yXo-ap-AeZ"/>
                     </connections>
@@ -273,6 +264,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="0.0" y="0.0"/>
+        </scene>
+        <!--Home-->
+        <scene sceneID="x9d-OM-SZL">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="QCd-OA-ZSy" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Home" image="house.fill" catalog="system" id="acW-dT-cKf"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="DJM-fx-ecp">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="rootViewController" id="OZk-hr-kmv"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zNf-P5-58l" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="749.27536231884062" y="-320.08928571428572"/>
         </scene>
     </scenes>
     <resources>
