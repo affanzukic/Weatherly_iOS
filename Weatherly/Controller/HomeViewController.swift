@@ -10,6 +10,11 @@ import UIKit
 import CoreLocation
 import MapKit
 
+protocol HandleMapSearch
+{
+    func dropPinZoomIn(placemark: MKPlacemark)
+}
+
 extension UIImageView
 {
     func load(url: URL)
@@ -21,8 +26,8 @@ extension UIImageView
                     if let image = UIImage(data: data)
                     {
                         DispatchQueue.main.async
-                            {
-                                self?.image = image
+                        {
+                            self?.image = image
                         }
                     }
                 }
@@ -71,14 +76,17 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     var currentLocation: CLLocation!
     var jsonFetcher: JSONFetcher?
     var weatherFetcher: currentWeatherModel?
+    var units = UnitSettings()
     let apikey = "44b7ba412800701a672fda14ae3f816c"
     var lon = 0.0
     var lat = 0.0
     var countryCode = ""
-    var celsiusOrFahrenheit = -273.15
-    var celsiusOrFahrenheitLetter = "C"
+    var celsiusOrFahrenheit: Double = 0.0
+    var celsiusOrFahrenheitLetter: String = ""
+    var knotsOrMS: Double = 0.0
+    var windSign: String = ""
     var resultSearchController: UISearchController? = nil
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var selectedPin: MKPlacemark? = nil
     
     var name: String? = nil
     
@@ -115,12 +123,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
             {
                 self.cityName.text = currentWeather.name
                 self.countryCode = currentWeather.country
-                self.windLabel.text = "Wind: \(currentWeather.windSpeed)  / \(currentWeather.windDeg)"
+                self.windLabel.text = "Wind: \(currentWeather.windSpeed * self.knotsOrMS) \(self.windSign)  / \(currentWeather.windDeg)°"
                 self.humidityLabel.text = "Humidity: \(currentWeather.humidity)"
                 self.pressureLabel.text = "Pressure: \(currentWeather.pressure)"
-                self.tempLabel.text = "\(currentWeather.temp + self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)"
-                self.feelsLike.text = "\(currentWeather.feelsLike - self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)"
-                self.minMaxTemp.text = "H \(currentWeather.maxTemp - self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)  /  L \(currentWeather.minTemp - self.celsiusOrFahrenheit) \(self.celsiusOrFahrenheitLetter)"
+                self.tempLabel.text = "\(Int(currentWeather.temp - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)"
+                self.feelsLike.text = "\(Int(currentWeather.feelsLike - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)"
+                self.minMaxTemp.text = "H \(Int(currentWeather.maxTemp - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)  /  L \(Int(currentWeather.minTemp - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)"
                 self.iconView.load(url: URL(string: "https://openweathermap.org/img/wn/\(currentWeather.icon)@2x.png")!)
             
                 self.titleLabel.text = currentWeather.title
@@ -151,6 +159,11 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     {
         super.viewDidLoad()
         
+        celsiusOrFahrenheit = units.getKelvinConversion()
+        celsiusOrFahrenheitLetter = units.getTempUnit()
+        windSign = units.getWindUnit()
+        knotsOrMS = units.getWindConversion()
+        
         locManager.requestAlwaysAuthorization()
         locManager.delegate = self
         locManager.startMonitoringSignificantLocationChanges()
@@ -175,9 +188,21 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
         resultSearchController?.dimsBackgroundDuringPresentation = true
         definesPresentationContext = true
         
-        
+        locationSearchTable.handleMapSearchDelegate = self
         
         print(lon, lat)
+    }
+}
+
+extension HomeViewController: HandleMapSearch
+{
+    func dropPinZoomIn(placemark: MKPlacemark)
+    {
+        selectedPin = placemark
+        
+        jsonFetcher = JSONFetcher()
+        jsonFetcher?.delegate = self
+        jsonFetcher?.fetchWeather(longitute: placemark.coordinate.longitude, latitude: placemark.coordinate.latitude, apikey: apikey)
     }
 }
 
