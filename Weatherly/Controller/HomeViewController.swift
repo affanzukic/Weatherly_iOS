@@ -76,15 +76,14 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     var currentLocation: CLLocation!
     var jsonFetcher: JSONFetcher?
     var weatherFetcher: currentWeatherModel?
-    var units = UnitSettings()
     let apikey = "44b7ba412800701a672fda14ae3f816c"
     var lon = 0.0
     var lat = 0.0
     var countryCode = ""
-    var celsiusOrFahrenheit: Double = 0.0
-    var celsiusOrFahrenheitLetter: String = ""
-    var knotsOrMS: Double = 0.0
-    var windSign: String = ""
+    var metricOrImperialTemp = 273.15
+    var metricOrImperialTempSign = " °C"
+    var metricOrImperialWind = 1.0
+    var metricOrImperialWindSign = " m/s"
     var resultSearchController: UISearchController? = nil
     var selectedPin: MKPlacemark? = nil
     
@@ -101,7 +100,26 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     @IBOutlet weak var pressureLabel: UILabel!
     @IBOutlet weak var lastUpdatedLabel: UILabel!
     @IBOutlet weak var iconView: UIImageView!
+    @IBOutlet weak var imperialUnitSwitch: UISwitch!
     
+    
+    @IBAction func imperialUnitChange(_ sender: UISwitch)
+    {
+        if imperialUnitSwitch.isOn == true
+        {
+            metricOrImperialTemp = 273.15 - 32.0
+            metricOrImperialTempSign = " °F"
+            metricOrImperialWind = 1.9
+            metricOrImperialWindSign = " kn"
+        }
+        else
+        {
+            metricOrImperialTemp = 273.15
+            metricOrImperialTempSign = " °C"
+            metricOrImperialWind = 1.0
+            metricOrImperialWindSign = " m/s"
+        }
+    }
     
     @IBAction func updateWeatherButton(_ sender: Any)
     {
@@ -118,21 +136,27 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
         print(weatherFetcher!.name)
         
         let currentWeather = weatherToShow(name: weatherFetcher!.name, country: weatherFetcher!.sys.country ?? "", windSpeed: weatherFetcher!.wind.speed, windDeg: weatherFetcher!.wind.deg, humidity: weatherFetcher!.main.humidity, pressure: weatherFetcher!.main.pressure, temp: weatherFetcher!.main.temp, feelsLike: weatherFetcher!.main.feels_like, minTemp: weatherFetcher!.main.temp_min, maxTemp: weatherFetcher!.main.temp_max, icon: weatherFetcher!.weather[0].icon, title: weatherFetcher!.weather[0].main, description: weatherFetcher!.weather[0].description)
+        let currentDateTime = Date()
+        let formatter = DateFormatter()
+        formatter.timeStyle = .medium
+        formatter.dateStyle = .long
+        let dateTimeString = formatter.string(from: currentDateTime)
         
         DispatchQueue.main.async
             {
                 self.cityName.text = currentWeather.name
                 self.countryCode = currentWeather.country
-                self.windLabel.text = "Wind: \(currentWeather.windSpeed * self.knotsOrMS) \(self.windSign)  / \(currentWeather.windDeg)°"
+                self.windLabel.text = "Wind: \(Int(currentWeather.windSpeed * self.metricOrImperialWind)) \(self.metricOrImperialWindSign)  / \(currentWeather.windDeg)°"
                 self.humidityLabel.text = "Humidity: \(currentWeather.humidity)"
-                self.pressureLabel.text = "Pressure: \(currentWeather.pressure)"
-                self.tempLabel.text = "\(Int(currentWeather.temp - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)"
-                self.feelsLike.text = "\(Int(currentWeather.feelsLike - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)"
-                self.minMaxTemp.text = "H \(Int(currentWeather.maxTemp - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)  /  L \(Int(currentWeather.minTemp - self.celsiusOrFahrenheit)) \(self.celsiusOrFahrenheitLetter)"
+                self.pressureLabel.text = "Pressure: \(currentWeather.pressure) hPa"
+                self.tempLabel.text = "\(Int(currentWeather.temp - self.metricOrImperialTemp)) \(self.metricOrImperialTempSign)"
+                self.feelsLike.text = "\(Int(currentWeather.feelsLike - self.metricOrImperialTemp)) \(self.metricOrImperialTempSign)"
+                self.minMaxTemp.text = "H \(Int(currentWeather.maxTemp - self.metricOrImperialTemp)) \(self.metricOrImperialTempSign)  /  L \(Int(currentWeather.minTemp - self.metricOrImperialTemp)) \(self.metricOrImperialTempSign)"
                 self.iconView.load(url: URL(string: "https://openweathermap.org/img/wn/\(currentWeather.icon)@2x.png")!)
             
                 self.titleLabel.text = currentWeather.title
-                self.descriptionLabel.text = currentWeather.description
+                self.descriptionLabel.text = currentWeather.description.capitalized
+                self.lastUpdatedLabel.text = "Last updated: \(dateTimeString)"
         }
     }
     
@@ -159,10 +183,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, JSONFetch
     {
         super.viewDidLoad()
         
-        celsiusOrFahrenheit = units.getKelvinConversion()
-        celsiusOrFahrenheitLetter = units.getTempUnit()
-        windSign = units.getWindUnit()
-        knotsOrMS = units.getWindConversion()
+        imperialUnitSwitch.isOn = false
+        iconView.layer.cornerRadius = 10
         
         locManager.requestAlwaysAuthorization()
         locManager.delegate = self
@@ -199,6 +221,8 @@ extension HomeViewController: HandleMapSearch
     func dropPinZoomIn(placemark: MKPlacemark)
     {
         selectedPin = placemark
+        self.lat = placemark.coordinate.latitude
+        self.lon = placemark.coordinate.longitude
         
         jsonFetcher = JSONFetcher()
         jsonFetcher?.delegate = self
